@@ -1,0 +1,94 @@
+const submitBtn = document.getElementById('submitBtn');
+const cityInp = document.getElementById('cityName');
+const city_name = document.getElementById('city');
+const temp_status = document.getElementById('temp_status');
+const temp = document.getElementById('temp');
+const dataHide = document.querySelector(".middle_layer");
+
+const getInfo = async (event) => {
+    event.preventDefault();
+    let cityVal = cityInp.value;
+    if (cityVal === "") {
+        city_name.innerText = "Please Write The Name before Search";
+        dataHide.classList.add('data_hide');
+    } else {
+        try {
+            let url = `http://api.openweathermap.org/data/2.5/weather?q=${cityVal}&units=metric&appid=2a8e841c3385e0ee1c37b65e0f82268a`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const arrData = [data];
+            temp.innerHTML = `${arrData[0].main.temp}<sup>o</sup>C`;
+
+            city_name.innerText = `${arrData[0].name},${arrData[0].sys.country}`;
+
+            const tempStatus = arrData[0].weather[0].main;
+            console.log(tempStatus);
+            if (tempStatus == "Sunny") {
+                temp_status.innerHTML =
+                    "<i class='fas  fa-sun' style='color: #eccc68;'></i>";
+            }else if (tempStatus == "Clear") {
+                temp_status.innerHTML =
+                    "<i class='fas  fa-sun' style='color: #eccc68;'></i>";
+            } else if (tempStatus == "Clouds") {
+                temp_status.innerHTML =
+                    "<i class='fas  fa-cloud' style='color: #f1f2f6;'></i>";
+            } else if (tempStatus == "Rainy") {
+                temp_status.innerHTML =
+                    "<i class='fas  fa-cloud-rain' style='color: #a4b0be;'></i>";
+            } else {
+                temp_status.innerHTML =
+                    "<i class='fas  fa-cloud' style='color:#f1f2f6;'></i>";
+            }
+            dataHide.classList.remove('data_hide');
+        }
+        catch {
+            city_name.innerText = "Please Write The Name Properly";
+            dataHide.classList.add('data_hide');
+        }
+    }
+    console.log("cliced");
+
+
+}
+submitBtn.addEventListener('click', getInfo);
+const getCurrDay = () => {
+    let curentTime = new Date;
+    var weekday = new Array(7);
+    weekday[0] = "Sunday";
+    weekday[1] = "Monday";
+    weekday[2] = "Tuesday";
+    weekday[3] = "Wednesday";
+    weekday[4] = "Thursday";
+    weekday[5] = "Friday";
+    weekday[6] = "Saturday";
+
+
+    let day = (weekday[curentTime.getDay()]);
+    return day;
+
+}
+const getCurrTime = () => {
+    var now = new Date();
+    var months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "June",
+        "July",
+        "Aug",
+        "Sept",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    var month = months[now.getMonth()];
+    var date = now.getDate();
+    return `${month} | ${date}`
+}
+const day = document.getElementById('day');
+const today_date = document.getElementById('today_date');
+day.innerText = getCurrDay();
+today_date.innerText = getCurrTime();
+
